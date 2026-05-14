@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\Cita;
-use App\Controllers\Http\CitaController;
+use App\Controllers\Http\ContactoController;
 
 
 
@@ -11,6 +11,6 @@ test('Existen los modelos de citas', function () {
 });
 
 // Comprobar la existencia del controlador de los contactos
-test('Existen los controladores de citas', function () {
-    $this->assertTrue(class_exists(CitaController::class));
+test('Existen los controladores de contactos', function () {
+    $this->assertTrue(class_exists(ContactoController::class));
 });
