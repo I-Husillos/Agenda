@@ -32,7 +32,7 @@ class CitasController extends Controller
         $request->validate([
             'titulo' => 'required|string|max:255',
             'fecha' => 'required|date',
-            'hora' => 'required|time',
+            'hora' => 'required|date_format:H:i',
             'descripcion' => 'required|string|max:255',
         ]);
 
@@ -51,7 +51,7 @@ class CitasController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Citas $citas)
+    public function show($id)
     {
         $citas = Citas::with(['contactos' => function ($query) {
             $query->orderBy('nombre', 'asc');
@@ -80,9 +80,34 @@ class CitasController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Citas $citas)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'titulo' => 'required|string|max:255',
+            'fecha' => 'required|date',
+            'hora' => 'required|date_format:H:i',
+            'descripcion' => 'required|string|max:255',
+        ]);
+
+        $citas = Citas::find($id);
+
+        if(!$citas) {
+            response()->json([
+                'message' => 'Cita no encontrada'
+            ], 401);
+        }
+
+        $citas->update([
+            'titulo' => $request->titulo,
+            'fecha' => $request->fecha,
+            'hora' => $request->hora,
+            'descripcion' => $request->descripcion,
+        ]);
+
+        return response()->json([
+            'message' => 'Cita actualizada exitosamente',
+            'citas' => $citas
+        ], 200);
     }
 
     /**
@@ -90,6 +115,33 @@ class CitasController extends Controller
      */
     public function destroy(Citas $citas)
     {
-        //
+        $citas->delete();
+
+        return response()->json([
+            'message' => 'Cita eliminada exitosamente'
+        ], 200);
+    }
+
+    public function agregarContacto($citaId, $contactoId)
+    {
+        $cita = Citas::find($citaId);
+
+        if (!$cita) {
+            return response()->json(['message' => 'Cita no encontrada'], 404);
+        }
+
+        $contacto = \App\Models\Contactos::find($contactoId);
+
+        if (!$contacto) {
+            return response()->json(['message' => 'Contacto no encontrado'], 404);
+        }
+
+        // attach() evita duplicados si usas sync(), o usa syncWithoutDetaching()
+        $cita->contactos()->attach($contactoId);
+
+        return response()->json([
+            'message' => 'Contacto relacionado con la cita exitosamente',
+            'cita' => $cita->load('contactos')
+        ], 200);
     }
 }

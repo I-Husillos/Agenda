@@ -7,3 +7,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::apiResource('citas', CitasController::class);
 Route::apiResource('contactos', ContactosController::class);
+
+Route::post('citas/{cita}/contactos/{contacto}', [CitasController::class, 'agregarContacto']);

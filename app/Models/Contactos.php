@@ -13,6 +13,6 @@ class Contactos extends Model
 
     public function citas()
     {
-        return $this->belongsToMany(Citas::class, 'contacto_id');
+        return $this->belongsToMany(Citas::class, 'cita_contacto', 'contacto_id', 'cita_id');
     }
 }

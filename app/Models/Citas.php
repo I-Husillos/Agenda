@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Citas extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'titulo',
         'fecha',
@@ -13,8 +16,8 @@ class Citas extends Model
         'descripcion',
     ];
 
-    public function contacto()
+    public function contactos()
     {
-        return $this->belongsToMany(Contactos::class, 'contacto_id');
+        return $this->belongsToMany(Contactos::class, 'cita_contacto', 'cita_id', 'contacto_id');
     }
 }
